@@ -1,0 +1,79 @@
+esphome:
+  name: cloud-light
+
+esp8266:
+  board: d1_mini
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  password: ""
+
+wifi:
+  # https://esphome.io/guides/configuration-types.html#command-line-substitutions
+  ssid: $wifi_ssid
+  password: $wifi_password
+  domain: .lan
+
+captive_portal:
+
+# TODO self host resources
+web_server:
+
+prometheus:
+
+output:
+  - platform: esp8266_pwm
+    pin: D1
+    id: pwm_cloud_1
+  - platform: esp8266_pwm
+    pin: D2
+    id: pwm_cloud_2
+  - platform: esp8266_pwm
+    pin: D3
+    id: pwm_moon
+
+light:
+  - platform: monochromatic
+    output: pwm_cloud_1
+    id: light_cloud_1
+    name: Cloud 1
+  - platform: monochromatic
+    output: pwm_cloud_2
+    id: light_cloud_2
+    name: Cloud 2
+  - platform: monochromatic
+    output: pwm_moon
+    id: light_moon
+    name: Moon
+
+binary_sensor:
+  - platform: gpio
+    id: switch_cloud_1
+    pin:
+      number: D5
+      mode: INPUT_PULLUP
+    on_state:
+      then:
+        - light.toggle: light_cloud_1
+  - platform: gpio
+    id: switch_cloud_2
+    pin:
+      number: D6
+      mode: INPUT_PULLUP
+    on_state:
+      then:
+        - light.toggle: light_cloud_2
+  - platform: gpio
+    id: switch_moon
+    pin:
+      number: D7
+      mode: INPUT_PULLUP
+    on_state:
+      then:
+        - light.toggle: light_moon

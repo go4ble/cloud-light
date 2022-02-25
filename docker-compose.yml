@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  esphome:
+    image: esphome/esphome:latest
+    volumes:
+      - ./:/config
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: host
+    # devices:
+    #   - /dev/ttyUSB0
+    command: run esphome.yml
